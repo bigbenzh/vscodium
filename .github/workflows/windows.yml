@@ -50,8 +50,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./check_tags.sh
 
-      - name: patch
-        run: python patch.py
         
       - name: Compute cache key
         id: yarnCacheKey
