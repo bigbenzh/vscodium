@@ -5,6 +5,7 @@ on:
   schedule:
     - cron: '0 0 * * *'
   push:
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -20,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        vscode_arch: [x64, ia32, arm64]
+        vscode_arch: [x64]
 
     steps:
       - uses: actions/checkout@v2
@@ -48,17 +49,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./check_tags.sh
-        if: env.SHOULD_DEPLOY == 'yes'
 
+      - name: patch
+        run: python patch.py
+        
       - name: Compute cache key
         id: yarnCacheKey
         run: echo "::set-output name=value::$(node build/azure-pipelines/computeYarnCacheKey.js)"
-        if: env.SHOULD_BUILD == 'yes'
+
 
       - name: Get yarn cache directory path
         id: yarnCacheDirPath
         run: echo "::set-output name=dir::$(yarn cache dir)"
-        if: env.SHOULD_BUILD == 'yes'
+
 
       - name: Cache yarn directory
         uses: actions/cache@v2
@@ -66,7 +69,7 @@ jobs:
           path: ${{ steps.yarnCacheDirPath.outputs.dir }}
           key: ${{ env.OS_NAME }}-${{ env.VSCODE_ARCH }}-yarnCacheDir-${{ steps.yarnCacheKey.outputs.value }}
           restore-keys: ${{ env.OS_NAME }}-${{ env.VSCODE_ARCH }}-yarnCacheDir-
-        if: env.SHOULD_BUILD == 'yes'
+
 
       - name: Build
         env:
@@ -74,22 +77,25 @@ jobs:
           npm_config_arch: ${{ matrix.vscode_arch }}
           npm_config_target_arch: ${{ matrix.vscode_arch }}
         run: ./build.sh
-        if: env.SHOULD_BUILD == 'yes'
+
 
       - name: Prepare artifacts
         run: ./prepare_artifacts.sh
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
 
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./release.sh
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
-
-      - name: Update versions repo
-        if: env.SHOULD_BUILD == 'yes' && env.SHOULD_DEPLOY == 'yes'
-        run: ./update_version.sh
-        env:
-          GITHUB_TOKEN: ${{ secrets.STRONGER_GITHUB_TOKEN }}
-          GITHUB_USERNAME: ${{ github.repository_owner }}
+      - name: Archive Release
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          filename: 'release.zip'
+          path: 'artifacts/'
+      - name: release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Development Build"
+          files: |
+            LICENSE.txt
+            release.zip
 
