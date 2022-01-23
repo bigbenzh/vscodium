@@ -49,14 +49,14 @@ update_setting () {
 update_setting "$TELEMETRY_ENABLE" src/vs/platform/telemetry/common/telemetryService.ts
 update_setting "$TELEMETRY_CRASH_REPORTER" src/vs/workbench/electron-sandbox/desktop.contribution.ts
 update_setting "$TELEMETRY_CONFIGURATION" src/vs/platform/telemetry/common/telemetryService.ts
-update_setting "'workbench.enableExperiments':" vscode/src/vs/workbench/contrib/experiments/browser/experiments.contribution.ts
-update_setting "'workbench.settings.enableNaturalLanguageSearch':" vscode/src/vs/workbench/contrib/preferences/common/preferencesContribution.ts
-update_setting "'extensions.autoCheckUpdates':" vscode/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
-update_setting "'extensions.autoUpdate':" vscode/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
-update_setting "'update.showReleaseNotes':" vscode/src/vs/platform/update/common/update.config.contribution.ts
+update_setting "'workbench.enableExperiments':" src/vs/workbench/contrib/experiments/browser/experiments.contribution.ts
+update_setting "'workbench.settings.enableNaturalLanguageSearch':" src/vs/workbench/contrib/preferences/common/preferencesContribution.ts
+update_setting "'extensions.autoCheckUpdates':" src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
+update_setting "'extensions.autoUpdate':" src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts
+update_setting "'update.showReleaseNotes':" src/vs/platform/update/common/update.config.contribution.ts
 
-update_setting  '"json.schemaDownload.enable":' vscode/extensions/json-language-features/package.json
-update_setting '"npm.fetchOnlinePackageInfo":'  vscode/extensions/npm/package.json
+update_setting  '"json.schemaDownload.enable":' extensions/json-language-features/package.json
+update_setting '"npm.fetchOnlinePackageInfo":'  extensions/npm/package.json
 
 
 # "update.mode" can't be patched with this script
