@@ -44,10 +44,6 @@ fi
 mv product.json product.json.bak
 
 # set fields in product.json
-webviewContentExternalBaseUrlTemplate='setpath(["webviewContentExternalBaseUrlTemplate"]; "https://vsc.test")'
-product_json_changes="${webviewContentExternalBaseUrlTemplate}"
-cat product.json.bak | jq "${product_json_changes}" > product.json
-cat product.json
 
 ../undo_telemetry.sh
 
