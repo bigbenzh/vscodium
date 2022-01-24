@@ -42,6 +42,7 @@ else
 fi
 
 mv product.json product.json.bak
+cat product.json.bak > product.jsong
 
 # set fields in product.json
 
